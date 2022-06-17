@@ -7,6 +7,7 @@ from .views import player_detail_view
 from .views import staff_api_view
 from .views import staff_detail_view
 from .views import team_api_count
+from .views import player_api_count
 
 
 
@@ -17,5 +18,6 @@ urlpatterns =[
     path('players/<int:pk>', player_detail_view, name='player_view'),
     path('staff/', staff_api_view, name='staff_list'),
     path('staff/<int:pk>', staff_detail_view, name='staff_view'),
-    path('math', team_api_count, name='math_view'),
+    path('math/howmanyteams', team_api_count, name='team_math_view'),
+    path('math/howmanyplayers', player_api_count, name='player_math_view'),
 ]

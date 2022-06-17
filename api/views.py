@@ -64,6 +64,12 @@ def team_api_count(request):
         team_count = Team.objects.count()
         content = {'Total Teams: ': team_count}
         return Response(content)
+@api_view(['GET'])
+def player_api_count(request):
+    if request.method == 'GET':
+        player_count = Player.objects.count()
+        content = {'Total Players: ': player_count}
+        return Response(content)
 # Master of Players...
 
 @api_view(['GET', 'POST'])
