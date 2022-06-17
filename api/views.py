@@ -5,6 +5,7 @@ from rest_framework import status
 from api.serializers import TeamSerializer
 from api.serializers import PlayerSerializer
 from api.serializers import StaffSerializer
+from api.serializers import StartingSerializer
 from .models import Team
 from .models import Player
 from .models import Staff
@@ -57,19 +58,44 @@ def team_detail_view(request,pk = None):
         team.delete()
         return Response('¡Deleted!')
 
-# Counting...
+# Team count...
+
 @api_view(['GET'])
 def team_api_count(request):
     if request.method == 'GET':
         team_count = Team.objects.count()
         content = {'Total Teams: ': team_count}
         return Response(content)
+
+# Players Count
+
 @api_view(['GET'])
 def player_api_count(request):
     if request.method == 'GET':
         player_count = Player.objects.count()
         content = {'Total Players: ': player_count}
         return Response(content)
+# Players Count - is starting
+
+@api_view(['GET'])
+def starting_api_count(request):
+    if request.method == 'GET':
+        starting_count = Player.objects.all()
+        teams_serializer = StartingSerializer(starting_count,many = True)
+        print(teams_serializer)
+        starting_count = teams_serializer.data
+        content = {'Total bench player: ': len(starting_count)}
+        return Response(content)
+
+# Oldest Player
+
+@api_view(['GET'])
+def test_age_older(request,birthDate):
+    if request.method == 'GET':
+        oldest_player = Player.objects()
+        result = {'Age: ': oldest_player}
+        return Response(result)
+
 # Master of Players...
 
 @api_view(['GET', 'POST'])
