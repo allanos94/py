@@ -1,87 +1,151 @@
-
 from rest_framework.views import APIView
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from api import serializers
-from django.http import JsonResponse
-from django.utils.decorators import method_decorator
-from django.shortcuts import render
-from django.views import View
-from django.views.decorators.csrf import csrf_exempt
+from api.serializers import TeamSerializer
+from api.serializers import PlayerSerializer
+from api.serializers import StaffSerializer
 from .models import Team
-import json
+from .models import Player
+from .models import Staff
+
 
 # Create your views here.
-class HelloApiView(APIView):
-    # API test
-    serializer_class = serializers.HelloSerializer
-    def get(self,request,format=None):
-        # Return characteristics list
-        an_apiview =[
-            'Using HTTP methods like GET, POST, PUT, DELETE',
-            'Is like a Djangos view',
-            'We can have the control about logical of the APP',
-            'is mapping manually to URLs'
-        ]
-        return Response({'message':'Hello','an_apiview':an_apiview})
-    def post(self,request):
-        # Message Name
-        serializer = self.serializer_class(data=request.data)
 
-        if serializer.is_valid():
-            name = serializer.validated_data.get('name')
-            message = f'Hello {name}'
-            return Response({'message':message})
-        else:
-            return Response(
-                serializer.errors,
-                status=status.HTTP_400_BAD_REQUEST
-            )
-class TeamView(View):
-    #Evadir autorizaciones
-    @method_decorator(csrf_exempt)
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
+# Master of Teams...
+
+@api_view(['GET', 'POST'])
+def team_api_view(request):
     #-------------GET-------------
-    def get(self,request,id=0):
-        if (id>0):
-           teams=list(Team.objects.filter(id=id).values())
-           if len(teams)>0:
-               team=teams[0]
-               datos={'message':"Success",'team':team}
-           else:
-               datos={'message':"No se encontraron Equipos"}
-           return JsonResponse(datos)
-        teams = list(Team.objects.values())
-        if len(teams)>0:
-            datos={'message':"Success",'teams':teams}
-        else:
-            datos={'message':"No se encontraron Equipos"}
-        return JsonResponse(datos)
+    if request.method == 'GET':
+        teams= Team.objects.all()
+        teams_serializer = TeamSerializer(teams,many = True)
+        return Response(teams_serializer.data)
+
     #-------------POST-------------
-    def post(self,request):
-        # print(request.body)
-        jd = json.loads(request.body)
-        print(jd)
-        Team.objects.create(name=jd['name'],flag=jd['flag'],shield=jd['shield'])
-        datos={'message':"Success"}
-        return JsonResponse(datos)
+    elif request.method == 'POST':
+          team_serializer = TeamSerializer(data = request.data)
+          if team_serializer.is_valid():
+            team_serializer.save()
+            return Response(team_serializer.data)
+          return Response(team_serializer.errors)
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def team_detail_view(request,pk = None):
+
+    #-------------GET-------------
+    if request.method == 'GET':
+        team = Team.objects.filter(id = pk).first()
+        team_serializer = TeamSerializer(team)
+        return Response(team_serializer.data)
+
     #-------------PUT-------------
-    def put(self,request,id):
-        jd = json.loads(request.body)
-        teams=list(Team.objects.filter(id=id).values())
-        if len(teams)>0:
-           team=Team.objects.get(id=id)
-           team.name=jd['name']
-           team.flag=jd['flag']
-           team.shield=jd['shield']
-           team.save()
-           datos={'message':"Success"}
-        else:
-            datos={'message':"No se encontraron Equipos"}
-        return JsonResponse(datos)
+
+    elif request.method == 'PUT':
+          request.data
+          team = Team.objects.filter(id = pk).first()
+          team_serializer = TeamSerializer(team,data=request.data)
+          if team_serializer.is_valid():
+              team_serializer.save()
+              return Response(team_serializer.data)
+          return Response(team_serializer.errors)
 
 
     # -------------DELETE-------------
-    def delete(self,request):
-        pass
+    elif  request.method == 'DELETE':
+        team = Team.objects.filter(id = pk).first()
+        team.delete()
+        return Response('¡Deleted!')
+
+# Counting...
+@api_view(['GET'])
+def team_api_count(request):
+    if request.method == 'GET':
+        team_count = Team.objects.count()
+        content = {'Total Teams: ': team_count}
+        return Response(content)
+# Master of Players...
+
+@api_view(['GET', 'POST'])
+def player_api_view(request):
+     #-------------GET-------------
+    if request.method == 'GET':
+        players= Player.objects.all()
+        players_serializer = PlayerSerializer(players,many = True)
+        return Response(players_serializer.data)
+    #-------------POST-------------
+    elif request.method == 'POST':
+          player_serializer = PlayerSerializer(data = request.data)
+          if player_serializer.is_valid():
+            player_serializer.save()
+            return Response(player_serializer.data)
+          return Response(player_serializer.errors)
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def player_detail_view(request,pk = None):
+    #-------------GET-------------
+    if request.method == 'GET':
+        player = Player.objects.filter(id = pk).first()
+        player_serializer = PlayerSerializer(player)
+        return Response(player_serializer.data)
+
+    #-------------PUT-------------
+
+    elif request.method == 'PUT':
+          request.data
+          player = Player.objects.filter(id = pk).first()
+          player_serializer = PlayerSerializer(player,data=request.data)
+          if player_serializer.is_valid():
+              player_serializer.save()
+              return Response(player_serializer.data)
+          return Response(player_serializer.errors)
+
+
+    # -------------DELETE-------------
+    elif  request.method == 'DELETE':
+        player = Player.objects.filter(id = pk).first()
+        player.delete()
+        return Response('¡Deleted!')
+
+#Master of Staff...
+
+@api_view(['GET', 'POST'])
+def staff_api_view(request):
+     #-------------GET-------------
+    if request.method == 'GET':
+        staffs= Staff.objects.all()
+        staffs_serializer = StaffSerializer(staffs,many = True)
+        return Response(staffs_serializer.data)
+    #-------------POST-------------
+    elif request.method == 'POST':
+          staff_serializer = StaffSerializer(data = request.data)
+          if staff_serializer.is_valid():
+            staff_serializer.save()
+            return Response(staff_serializer.data)
+          return Response(staff_serializer.errors)
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def staff_detail_view(request,pk = None):
+    #-------------GET-------------
+    if request.method == 'GET':
+        staff = Staff.objects.filter(id = pk).first()
+        staff_serializer = StaffSerializer(staff)
+        return Response(staff_serializer.data)
+
+    #-------------PUT-------------
+
+    elif request.method == 'PUT':
+          request.data
+          staff = Staff.objects.filter(id = pk).first()
+          staff_serializer = StaffSerializer(staff,data=request.data)
+          if staff_serializer.is_valid():
+              staff_serializer.save()
+              return Response(staff_serializer.data)
+          return Response(staff_serializer.errors)
+
+
+    # -------------DELETE-------------
+    elif  request.method == 'DELETE':
+        staff = Staff.objects.filter(id = pk).first()
+        staff.delete()
+        return Response('¡Deleted!')

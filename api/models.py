@@ -1,8 +1,8 @@
+from turtle import position
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.models import BaseUserManager
-
 # Create your models here.
 class UserAccessManager(BaseUserManager):
 
@@ -52,9 +52,27 @@ class UserAccess(AbstractBaseUser, PermissionsMixin):
         # Return User String
         return self.email
 class Team(models.Model):
-    name=models.CharField(max_length=30)
-    flag=models.ImageField()
-    shield=models.ImageField()
+    # Teams of Soccer World Cup
+    teamName = models.CharField(max_length=15)
+    flag     = models.CharField(max_length=15)
+    shield   = models.CharField(max_length=15)
 
     def __str__(self):
-        return self.name
+        return self.teamName
+class Player(models.Model):
+    # Players model of World Cup
+    playerPicture = models.CharField(max_length=20)
+    name          = models.CharField(max_length=20)
+    lastName      = models.CharField(max_length=20)
+    birthDate     = models.DateField()
+    position      = models.CharField(max_length=20)
+    shirtNumber   = models.FloatField()
+    is_starting   = models.BooleanField()
+
+class Staff(models.Model):
+    name          = models.CharField(max_length=20)
+    lastName      = models.CharField(max_length=20)
+    birthDate     = models.DateField()
+    lastName      = models.CharField(max_length=20)
+    nationality   = models.CharField(max_length=20)
+    Role          = models.CharField(max_length=20)
