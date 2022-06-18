@@ -6,9 +6,11 @@ from api.serializers import TeamSerializer
 from api.serializers import PlayerSerializer
 from api.serializers import StaffSerializer
 from api.serializers import StartingSerializer
+from api.serializers import AgeSerializer
 from .models import Team
 from .models import Player
 from .models import Staff
+
 
 
 # Create your views here.
@@ -58,7 +60,7 @@ def team_detail_view(request,pk = None):
         team.delete()
         return Response('¡Deleted!')
 
-# Team count...
+# 1----> Team count <-----
 
 @api_view(['GET'])
 def team_api_count(request):
@@ -67,7 +69,7 @@ def team_api_count(request):
         content = {'Total Teams: ': team_count}
         return Response(content)
 
-# Players Count
+# 2-----> Players Count <-----
 
 @api_view(['GET'])
 def player_api_count(request):
@@ -79,21 +81,24 @@ def player_api_count(request):
 
 @api_view(['GET'])
 def starting_api_count(request):
+
     if request.method == 'GET':
-        starting_count = Player.objects.all()
+        starting_count = Player.objects.filter(is_starting = False)
         teams_serializer = StartingSerializer(starting_count,many = True)
-        print(teams_serializer)
         starting_count = teams_serializer.data
-        content = {'Total bench player: ': len(starting_count)}
-        return Response(content)
+        result = {'There is ':len(starting_count)}
+        return Response (result)
 
 # Oldest Player
 
 @api_view(['GET'])
-def test_age_older(request,birthDate):
+def test_age_older(request):
+
     if request.method == 'GET':
-        oldest_player = Player.objects()
-        result = {'Age: ': oldest_player}
+        oldest_player = Player.objects.values('birthDate').all()
+        # player_serializer = AgeSerializer(oldest_player,many = True)
+        # print(player_serializer)
+        result = (oldest_player)
         return Response(result)
 
 # Master of Players...

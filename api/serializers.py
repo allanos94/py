@@ -3,6 +3,7 @@ from rest_framework import serializers
 from api.models import Team
 from api.models import Player
 from api.models import Staff
+from datetime import date
 class TeamSerializer(serializers.ModelSerializer):
     class Meta:
           model = Team
@@ -25,3 +26,7 @@ class StartingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Player
         fields = ['is_starting']
+class AgeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Player
+        fields = ['birthDate']

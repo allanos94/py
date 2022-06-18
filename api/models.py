@@ -14,7 +14,7 @@ class UserAccessManager(BaseUserManager):
             raise ValueError('User must have an email address')
 
         email = self.normalize_email(email)
-        user = self.model(email=email, name=name)
+        user  = self.model(email=email, name=name)
 
         user.set_password(password)
         user.save(using=self._db)
@@ -31,10 +31,10 @@ class UserAccessManager(BaseUserManager):
         return user
 class UserAccess(AbstractBaseUser, PermissionsMixin):
     # User access for API
-    email = models.EmailField(max_length=255, unique=True)
-    name = models.CharField(max_length=255)
+    email     = models.EmailField(max_length=255, unique=True)
+    name      = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
+    is_staff  = models.BooleanField(default=False)
 
     objects = UserAccessManager()
 
@@ -57,8 +57,6 @@ class Team(models.Model):
     flag     = models.CharField(max_length=15)
     shield   = models.CharField(max_length=15)
 
-    def __str__(self):
-        return self.teamName
 class Player(models.Model):
     # Players model of World Cup
     playerPicture = models.CharField(max_length=20)
