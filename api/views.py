@@ -102,9 +102,18 @@ def team_more_players(request):
 def avg_team_players(request):
     if request.method == 'GET':
         avg_player = Player.objects.values('teamName_id').annotate(players_avg=Avg('id'))
-        print(avg_player)
-        result = {'The avg team players is ': (avg_player)}
+        result = {'The avg team players are ': (avg_player)}
         return Response(result)
+
+# Avg Starting players/team
+
+@api_view(['GET'])
+def avg_start_players(request):
+    if request.method == 'GET':
+        count_start = Player.objects.values('teamName_id','name').filter(is_starting=False).annotate(count=Count('id')).aggregate(Avg('count'))
+        result      = {'The avg team players are ': (count_start)}
+        return Response(result)
+
 # Oldest Player
 
 @api_view(['GET'])
