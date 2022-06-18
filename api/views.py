@@ -6,7 +6,7 @@ from rest_framework import status
 from api.serializers import TeamSerializer, PlayerSerializer, StaffSerializer
 from api.serializers import StartingSerializer, AgeSerializer
 from .models import Team, Player, Staff
-from django.db.models import Count
+from django.db.models import Count, Max, Avg
 
 
 # Create your views here.
@@ -82,7 +82,7 @@ def starting_api_count(request):
         starting_count = Player.objects.filter(is_starting = False)
         teams_serializer = StartingSerializer(starting_count,many = True)
         starting_count = teams_serializer.data
-        result = {'There is ':len(starting_count)}
+        result = {'The quantity of starting players is':len(starting_count)}
         return Response (result)
 
 # Team w/ more players
@@ -90,13 +90,21 @@ def starting_api_count(request):
 @api_view(['GET'])
 def team_more_players(request):
     if request.method == 'GET':
-        oldest_player = Player.objects.annotate(team_count=Count('teamName_id')).order_by('-team_count')[0].team_count
-        print(oldest_player)
-        player_serializer = PlayerSerializer(oldest_player,many = True)
-        # print(player_serializer)
-        result = {'There is ': (oldest_player)}
+        teamName_id = 'teamName_id'
+        more_player = Player.objects.values('teamName_id').annotate(Count('id'))
+        print(more_player)
+        result = {'The teams id with more player is ': (more_player[0]['teamName_id'])}
         return Response(result)
 
+# Avg players/team
+
+@api_view(['GET'])
+def avg_team_players(request):
+    if request.method == 'GET':
+        avg_player = Player.objects.values('teamName_id').annotate(players_avg=Avg('id'))
+        print(avg_player)
+        result = {'The avg team players is ': (avg_player)}
+        return Response(result)
 # Oldest Player
 
 @api_view(['GET'])
