@@ -6,7 +6,7 @@ from rest_framework import status
 from api.serializers import TeamSerializer, PlayerSerializer, StaffSerializer
 from api.serializers import StartingSerializer, AgeSerializer
 from .models import Team, Player, Staff
-
+from django.db.models import Count
 
 
 # Create your views here.
@@ -84,6 +84,18 @@ def starting_api_count(request):
         starting_count = teams_serializer.data
         result = {'There is ':len(starting_count)}
         return Response (result)
+
+# Team w/ more players
+
+@api_view(['GET'])
+def team_more_players(request):
+    if request.method == 'GET':
+        oldest_player = Player.objects.annotate(team_count=Count('teamName_id')).order_by('-team_count')[0].team_count
+        print(oldest_player)
+        player_serializer = PlayerSerializer(oldest_player,many = True)
+        # print(player_serializer)
+        result = {'There is ': (oldest_player)}
+        return Response(result)
 
 # Oldest Player
 
