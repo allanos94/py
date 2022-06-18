@@ -6,12 +6,9 @@ from .views import player_api_view
 from .views import player_detail_view
 from .views import staff_api_view
 from .views import staff_detail_view
-from .views import team_api_count
-from .views import player_api_count
-from .views import test_age_older
-from .views import starting_api_count
-
-
+from django.urls import path, include
+from .views import team_api_view, player_api_count
+from .views import test_age_older, starting_api_count, team_api_count
 
 
 urlpatterns =[

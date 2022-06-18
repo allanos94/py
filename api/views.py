@@ -1,15 +1,11 @@
+from django.forms import DateField
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from api.serializers import TeamSerializer
-from api.serializers import PlayerSerializer
-from api.serializers import StaffSerializer
-from api.serializers import StartingSerializer
-from api.serializers import AgeSerializer
-from .models import Team
-from .models import Player
-from .models import Staff
+from api.serializers import TeamSerializer, PlayerSerializer, StaffSerializer
+from api.serializers import StartingSerializer, AgeSerializer
+from .models import Team, Player, Staff
 
 
 
@@ -93,12 +89,12 @@ def starting_api_count(request):
 
 @api_view(['GET'])
 def test_age_older(request):
-
     if request.method == 'GET':
-        oldest_player = Player.objects.values('birthDate').all()
-        # player_serializer = AgeSerializer(oldest_player,many = True)
-        # print(player_serializer)
-        result = (oldest_player)
+        oldest_player = Player.objects.all()
+        print(oldest_player)
+        player_serializer = AgeSerializer(oldest_player,many = True)
+        print(player_serializer)
+        result = (player_serializer.data)
         return Response(result)
 
 # Master of Players...

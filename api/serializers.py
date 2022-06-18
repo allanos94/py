@@ -1,9 +1,7 @@
 from dataclasses import field
 from rest_framework import serializers
-from api.models import Team
-from api.models import Player
-from api.models import Staff
-from datetime import date
+from api.models import Team, Player, Staff
+from datetime import datetime
 class TeamSerializer(serializers.ModelSerializer):
     class Meta:
           model = Team
@@ -27,6 +25,7 @@ class StartingSerializer(serializers.ModelSerializer):
         model = Player
         fields = ['is_starting']
 class AgeSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Player
         fields = ['birthDate']

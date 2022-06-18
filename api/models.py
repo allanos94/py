@@ -1,8 +1,7 @@
 from turtle import position
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser
-from django.contrib.auth.models import PermissionsMixin
-from django.contrib.auth.models import BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+from datetime import datetime
 # Create your models here.
 class UserAccessManager(BaseUserManager):
 
@@ -57,8 +56,12 @@ class Team(models.Model):
     flag     = models.CharField(max_length=15)
     shield   = models.CharField(max_length=15)
 
+    def __str__(self):
+        return self.teamName
+
 class Player(models.Model):
     # Players model of World Cup
+    teamName_id   = models.ForeignKey(Team, on_delete=models.CASCADE, blank = True, null = True)
     playerPicture = models.CharField(max_length=20)
     name          = models.CharField(max_length=20)
     lastName      = models.CharField(max_length=20)
@@ -67,6 +70,14 @@ class Player(models.Model):
     shirtNumber   = models.FloatField()
     is_starting   = models.BooleanField()
 
+    @property
+    def age(self):
+        return int((datetime.now() - self.instance.birthDate).days / 365.25)
+
+    def __str__(self):
+        return self.name
+
+
 class Staff(models.Model):
     name          = models.CharField(max_length=20)
     lastName      = models.CharField(max_length=20)
@@ -74,3 +85,6 @@ class Staff(models.Model):
     lastName      = models.CharField(max_length=20)
     nationality   = models.CharField(max_length=20)
     Role          = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.name
