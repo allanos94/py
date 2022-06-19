@@ -53,84 +53,6 @@ def team_detail_view(request,pk = None):
         team = Team.objects.filter(id = pk).first()
         team.delete()
         return Response('¡Deleted!')
-
-# 1----> Team count <-----
-
-@api_view(['GET'])
-def team_api_count(request):
-    if request.method == 'GET':
-        team_count = Team.objects.count()
-        content = {'Total Teams: ': team_count}
-        return Response(content)
-
-# 2-----> Players Count <-----
-
-@api_view(['GET'])
-def player_api_count(request):
-    if request.method == 'GET':
-        player_count = Player.objects.count()
-        content = {'Total Players: ': player_count}
-        return Response(content)
-# Players Count - is starting
-
-@api_view(['GET'])
-def starting_api_count(request):
-
-    if request.method == 'GET':
-        starting_count = Player.objects.filter(is_starting = False)
-        teams_serializer = StartingSerializer(starting_count,many = True)
-        starting_count = teams_serializer.data
-        result = {'The quantity of starting players is':len(starting_count)}
-        return Response (result)
-
-# Team w/ more players
-
-@api_view(['GET'])
-def team_more_players(request):
-    if request.method == 'GET':
-        teamName_id = 'teamName_id'
-        more_player = Player.objects.values('teamName_id').annotate(Count('id'))
-        print(more_player)
-        result = {'The teams id with more player is ': (more_player[0]['teamName_id'])}
-        return Response(result)
-
-# Avg players/team
-
-@api_view(['GET'])
-def avg_team_players(request):
-    if request.method == 'GET':
-        avg_player = Player.objects.values('teamName_id').annotate(players_avg=Avg('id'))
-        result = {'The avg team players are ': (avg_player)}
-        return Response(result)
-
-# Avg Starting players/team
-
-@api_view(['GET'])
-def avg_start_players(request):
-    if request.method == 'GET':
-        count_start = Player.objects.values('teamName_id','name').filter(is_starting=False).annotate(count=Count('id')).aggregate(Avg('count'))
-        result      = {'The avg team players are ': (count_start)}
-        return Response(result)
-
-# Oldest Player
-
-@api_view(['GET'])
-def player_age_older(request):
-    if request.method == 'GET':
-        oldest_player = Player.objects.values('name','birthDate').order_by('birthDate').first()
-        result = {'The oldest player is ': (oldest_player)}
-        return Response(result)
-
-# Youngest Player
-
-@api_view(['GET'])
-def player_age_younger(request):
-    if request.method == 'GET':
-        youngest_player = Player.objects.values('name','birthDate').order_by('-birthDate').first()
-        result = {'The youngest player is ': (youngest_player)}
-        return Response(result)
-
-
 # Master of Players...
 
 @api_view(['GET', 'POST'])
@@ -216,3 +138,87 @@ def staff_detail_view(request,pk = None):
         staff = Staff.objects.filter(id = pk).first()
         staff.delete()
         return Response('¡Deleted!')
+# 1----> Team count <-----
+
+@api_view(['GET'])
+def team_api_count(request):
+    if request.method == 'GET':
+        team_count = Team.objects.count()
+        content = {'Total Teams: ': team_count}
+        return Response(content)
+
+# 2-----> Players Count <-----
+
+@api_view(['GET'])
+def player_api_count(request):
+    if request.method == 'GET':
+        player_count = Player.objects.count()
+        content = {'Total Players: ': player_count}
+        return Response(content)
+# Players Count - is starting
+
+@api_view(['GET'])
+def starting_api_count(request):
+
+    if request.method == 'GET':
+        starting_count = Player.objects.filter(is_starting = False)
+        teams_serializer = StartingSerializer(starting_count,many = True)
+        starting_count = teams_serializer.data
+        result = {'The quantity of starting players is':len(starting_count)}
+        return Response (result)
+
+# Team w/ more players
+
+@api_view(['GET'])
+def team_more_players(request):
+    if request.method == 'GET':
+        teamName_id = 'teamName_id'
+        more_player = Player.objects.values('teamName_id').annotate(Count('id'))
+        print(more_player)
+        result = {'The teams id with more player is ': (more_player[0]['teamName_id'])}
+        return Response(result)
+
+# Avg players/team
+
+@api_view(['GET'])
+def avg_team_players(request):
+    if request.method == 'GET':
+        avg_player = Player.objects.values('teamName_id').annotate(players_avg=Avg('id'))
+        result = {'The avg team players are ': (avg_player)}
+        return Response(result)
+
+# Avg Starting players/team
+
+@api_view(['GET'])
+def avg_start_players(request):
+    if request.method == 'GET':
+        count_start = Player.objects.values('teamName_id','name').filter(is_starting=False).annotate(count=Count('id')).aggregate(Avg('count'))
+        result      = {'The avg team players are ': (count_start)}
+        return Response(result)
+
+# Oldest Player
+
+@api_view(['GET'])
+def player_age_older(request):
+    if request.method == 'GET':
+        oldest_player = Player.objects.values('name','birthDate').order_by('birthDate').first()
+        result = {'The oldest player is ': (oldest_player)}
+        return Response(result)
+
+# Youngest Player
+
+@api_view(['GET'])
+def player_age_younger(request):
+    if request.method == 'GET':
+        youngest_player = Player.objects.values('name','birthDate').order_by('-birthDate').first()
+        result = {'The youngest player is ': (youngest_player)}
+        return Response(result)
+
+# Oldest DT
+
+@api_view(['GET'])
+def dt_age_older(request):
+    if request.method == 'GET':
+        oldest_dt = Staff.objects.filter(Role = 'DT').values('name','birthDate').order_by('birthDate').first()
+        result = {'The oldest DT is ': (oldest_dt)}
+        return Response(result)

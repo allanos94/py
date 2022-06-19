@@ -9,7 +9,7 @@ from .views import staff_detail_view
 from django.urls import path, include
 from .views import team_api_view, player_api_count, team_more_players, avg_start_players
 from .views import player_age_older, starting_api_count, team_api_count, avg_team_players
-from .views import player_age_younger
+from .views import player_age_younger, dt_age_older
 
 urlpatterns =[
     path('teams/', team_api_view, name='teams_list'),
@@ -26,4 +26,5 @@ urlpatterns =[
     path('math/moreplayers', team_more_players, name='starting_players_view'),
     path('math/avgplayers', avg_team_players, name='avg_players_view'),
     path('math/avgstart', avg_start_players, name='avg_start_view'),
+    path('math/oldestdt', dt_age_older, name='oldest_dt_view'),
 ]
