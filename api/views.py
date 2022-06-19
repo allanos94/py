@@ -1,12 +1,10 @@
-from django.forms import DateField
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework import status
 from api.serializers import TeamSerializer, PlayerSerializer, StaffSerializer
 from api.serializers import StartingSerializer, AgeSerializer
 from .models import Team, Player, Staff
-from django.db.models import Count, Max, Avg
+from django.db.models import Count, Max, Avg, Min
 
 
 # Create your views here.
@@ -119,11 +117,8 @@ def avg_start_players(request):
 @api_view(['GET'])
 def test_age_older(request):
     if request.method == 'GET':
-        oldest_player = Player.objects.all()
-        print(oldest_player)
-        player_serializer = AgeSerializer(oldest_player,many = True)
-        print(player_serializer)
-        result = (player_serializer.data)
+        oldest_player = Player.objects.values('name','birthDate').order_by('birthDate').first()
+        result = {'The oldest player is ': (oldest_player)}
         return Response(result)
 
 # Master of Players...
