@@ -115,11 +115,21 @@ def avg_start_players(request):
 # Oldest Player
 
 @api_view(['GET'])
-def test_age_older(request):
+def player_age_older(request):
     if request.method == 'GET':
         oldest_player = Player.objects.values('name','birthDate').order_by('birthDate').first()
         result = {'The oldest player is ': (oldest_player)}
         return Response(result)
+
+# Youngest Player
+
+@api_view(['GET'])
+def player_age_younger(request):
+    if request.method == 'GET':
+        youngest_player = Player.objects.values('name','birthDate').order_by('-birthDate').first()
+        result = {'The youngest player is ': (youngest_player)}
+        return Response(result)
+
 
 # Master of Players...
 
