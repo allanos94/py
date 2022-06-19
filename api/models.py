@@ -78,7 +78,9 @@ class Player(models.Model):
         return self.name
 
 
+
 class Staff(models.Model):
+    teamName_id   = models.ForeignKey(Team, on_delete=models.CASCADE, blank = True, null = True)
     name          = models.CharField(max_length=20)
     lastName      = models.CharField(max_length=20)
     birthDate     = models.DateField()
